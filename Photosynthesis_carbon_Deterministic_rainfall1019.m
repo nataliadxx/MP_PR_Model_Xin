@@ -82,7 +82,7 @@ for i=1:Nm
 % Plant dynamics
     Tr(i)=ET0*(0.33*LAI(x1,i)+0.45)*(-2*s(x1,i)^3+3*s(x1,i)^2)-tox*UPxt(i);            %Transpiration (mm/d);increase with LAI and s; decrease as contaminant accumulates    
     Ev(i)=ET0*rs/(1+LAI(x1,i)/LAImax);      %evaporation decreases with LAI and increases with rs (mm/d)
-    An(i)=12*Tr(i)*WUE/18;               %Photosynthesis rate kg C/(m2*d); note that there is an internal unit conversion (kg/(m2*d))          
+    An(i)=12*Tr(i)*WUE/18;               %Photosynthesis rate kg C/(m2*d); note that there is a unit conversion (kg/(m2*d))          
 % Hydrologic balance?
     ET(i)=Tr(i)+Ev(i);
     Precip=interp1(tday,Pr,tt(i),'linear');
@@ -97,8 +97,8 @@ for i=1:Nm
     x(i+1)=max(x(i)+dt*(-UPx(i)-LEx(i))/Zr(i),0);  %g/mm3
     UPxt(i+1)=UPxt(i)+UPx(i)*dt;         
 % Carbon assimilation and partitioning
-     Re(i)=0.5*An(i);                 %Farrar 1985, Amthor 1989
-     dMsh(i)=0.75*(An(i)-Re(i))*2*dt;      %Plant tissue typically contains about 45-50% carbon; Assuming the biomass partition follows the empirical beta from Niklas 2005
+     Re(i)=0.5*An(i);                 %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
+     dMsh(i)=0.75*(An(i)-Re(i))*2*dt;      %Plant tissue typically contains about 45-50% carbon (so *2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
      Msh(i+1)=Msh(i)+dMsh(i);
      LAI(x1,i+1)=min(Msh(i+1)/ma,LAImax);
      dMrt=0.25*(An(i)-Re(i))*2*dt;

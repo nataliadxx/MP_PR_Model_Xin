@@ -14,7 +14,7 @@ clear all
 clc
 %------------ Construct synthetic precipitation time series
 freq=1;                       % Return frequency between days (1/d)
-annual_precip=600;               % Annual precip. (mm/year)
+annual_precip=800;               % Annual precip. (mm/year)
 N=365;                           % Number of days to construct precipitation
 dep=(annual_precip/365)/freq;
 Pr=ones(1,N)*dep;                  %constant rainfall
@@ -31,7 +31,7 @@ LEt=[];
 x1=1;                % for loop controling running times of the model
 % Solves the Hydrologic Balance
 dt=0.01;
-tt=[0:dt:N-1];
+tt=[0:dt:N-1];       % time axis for graphing
 Nm=length(tt);
 %------------------- Soil properties
 soiltype=10;                  % Sand =1; Clay =11
@@ -64,7 +64,7 @@ LAI(x1,1)=0.1;                %Initial LAI (how much biomass has been developed 
 rmax=0.05;                %Maximum growth rate of LAI (1/time), noting that this value is associated with dt
 k_intercept=0.05;         %Attenuation of rainwater - used for interception
 UPxt(1)=0;                %Accumulated toxicant in the plant (g/mm2)
-tox=0.01;                     %Parameter indicating toxicant uptake's impact on plant growth/plant sensitivity
+tox=0.01;                     %Parameter indicating plant sensitivity to the toxicant
 SRL=150;                   %Specific root length (mm/kg)
 ma=0.15;                    %Empirical transfering parameter of aboveground biomass (LAI and Msh) 0.15-0.2 (kg/m2)
 Zr(1)=50;
@@ -80,10 +80,10 @@ for i=1:Nm
     xs(i)=x(i)/(Por*s(x1,i)+rhob*kd); %solute contaminant
     dw(i)=Por*Zr(i);             %nZr(mm)
 % Plant dynamics
-    Tr(i)=ET0*(0.33*LAI(x1,i)+0.45)*(-2*s(x1,i)^3+3*s(x1,i)^2)-tox*UPxt(i);            %Transpiration (mm/d);increase with LAI and s; decrease as contaminant accumulates    
+    Tr(i)=ET0*(0.33*LAI(x1,i)+0.45)*(-2*s(x1,i)^3+3*s(x1,i)^2)-tox*UPxt(i);            %Transpiration (mm/d);increase with LAI and s; decrease as contaminant accumulates; empirical   
     Ev(i)=ET0*rs/(1+LAI(x1,i)/LAImax);      %evaporation decreases with LAI and increases with rs (mm/d)
-    An(i)=12*Tr(i)*WUE/18;               %Photosynthesis rate kg C/(m2*d); note that there is a unit conversion (kg/(m2*d))          
-% Hydrologic balance?
+    An(i)=12*Tr(i)*WUE/18;               %Photosynthesis rate kg C/(m2*d); note that there is a unit conversion (kg/(m2*d)); 12 and 18 are MW of C and H20       
+% Hydrologic balance
     ET(i)=Tr(i)+Ev(i);
     Precip=interp1(tday,Pr,tt(i),'linear');
     a_intercept=exp(-k_intercept*LAI(x1,i));
@@ -98,8 +98,8 @@ for i=1:Nm
     UPxt(i+1)=UPxt(i)+UPx(i)*dt;         
 % Carbon assimilation and partitioning
      Re(i)=0.5*An(i);                 %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
-     dMsh(i)=0.75*(An(i)-Re(i))*2*dt;      %Plant tissue typically contains about 45-50% carbon (so *2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
-     Msh(i+1)=Msh(i)+dMsh(i);
+     dMsh=0.75*(An(i)-Re(i))*2*dt;      %Plant tissue typically contains about 45-50% carbon (so *2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
+     Msh(i+1)=Msh(i)+dMsh;
      LAI(x1,i+1)=min(Msh(i+1)/ma,LAImax);
      dMrt=0.25*(An(i)-Re(i))*2*dt;
      Mrt(i+1)=Mrt(i)+dMrt;

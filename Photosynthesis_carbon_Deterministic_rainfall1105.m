@@ -28,7 +28,7 @@ s=[];
 xrmvd=[];
 UPt=[];
 LEt=[];
-x1=1;                % for loop controling running times of the model
+x1=1;                % for loop controlling running times of the model
 % Solves the Hydrologic Balance
 dt=0.01;
 tt=[0:dt:N-1];       % time axis for graphing
@@ -97,8 +97,8 @@ for i=1:Nm
     x(i+1)=max(x(i)+dt*(-UPx(i)-LEx(i))/Zr(i),0);  %g/mm3
     UPxt(i+1)=UPxt(i)+UPx(i)*dt;         
 % Carbon assimilation and partitioning
-Time_2_max_LAI=500;
-     Re(i)=(Msh(i)+Mrt(i))/(Time_2_max_LAI);                  %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
+     Time_2_max_LAI=365; %days needed to reach the maximum LAI
+     Re(i)=(Msh(i)+Mrt(i))/Time_2_max_LAI;                  %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
      dMsh=max(0.75*(An(i)-Re(i))*2*dt,0);         %Plant tissue typically contains about 45-50% carbon (so *2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
      Msh(i+1)=Msh(i)+dMsh;
      LAI(x1,i+1)=min(Msh(i+1)/ma,LAImax);

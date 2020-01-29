@@ -34,7 +34,7 @@ dt=0.01;
 tt=[0:dt:N-1];       % time axis for graphing
 Nm=length(tt);
 %------------------- Soil properties
-soiltype=10;                  % Sand =1; Clay =11
+soiltype=8;                  % Sand =1; Clay =11
 [b,thetas, Ks1, psis,theta_w]=soil_hydraulic_values_generator(soiltype);
 rhob=1500*1000;               % Bulk density, g/m3
 Por=1.01*thetas;              % Porosity, a bit larger than soil moisture content near saturation

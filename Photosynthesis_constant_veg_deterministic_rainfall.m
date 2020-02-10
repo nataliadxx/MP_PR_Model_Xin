@@ -14,14 +14,14 @@
 clear all
 clc
 %------------ Construct synthetic precipitation time series
-freq=1/10;                       % Return frequency between days (1/d)
+freq=1;                       % Return frequency between days (1/d)
 annual_precip=500;               % Annual precip. (mm/year)
 N=365;                           % Number of days to simulate the process
 dep=(annual_precip/365)/freq;
-[Pr]=precip_generate(freq,dep,N);                  %constant rainfall (mm/d)
+Pr=ones(1,N)*dep;                  %constant rainfall (mm/d)
 tday=[0:1:N-1];                    % Time series
 %----------- Plot synthetic precipitation time series
-Plot_Precip_Time_Series
+%Plot_Precip_Time_Series
 
 Eff=[];
 s=[];

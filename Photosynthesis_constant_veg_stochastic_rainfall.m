@@ -58,7 +58,7 @@ x=[];xs=[];UPx=[]; LEx=[];
 x(1)=xo;                    % Contaminant concentration (g/mm3)
 %------------------- Plant properties
 LAI=3;                %(m2/m2)
-Zr=300;               %Maximum root-zone depth (mm)
+Zr=60;               %Maximum root-zone depth (mm)
 Evmax=ET0*exp(-0.398*LAI);               % surface evaporation decreases with LAI (Or & Lehmann 2019)
 r=[]; UPxt=[];
 k_intercept=0.05;         %Attenuation of rainwater - used for interception

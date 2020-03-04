@@ -15,8 +15,8 @@ clear all
 clc
 %------------ Construct synthetic precipitation time series
 freq=1;                       % Return frequency between days (1/d)
-annual_precip=1000;               % Annual precip. (mm/year)
-N=365;                           % Number of days to simulate the process
+annual_precip=800;               % Annual precip. (mm/year)
+N=1000;                           % Number of days to simulate the process
 dep=(annual_precip/365)/freq;
 Pr=ones(1,N)*dep;                  %constant rainfall (mm/d)
 tday=[0:1:N-1];                    % Time series
@@ -26,7 +26,8 @@ tday=[0:1:N-1];                    % Time series
 Eff=[];
 LAI=[]; s=[];
 xrmvd=[]; UPt=[]; LEt=[];
-for nn=1:10                % for loop controlling running times of the model
+%for nn=1:10                % for loop controlling running times of the model
+    nn=1;
     dt=0.01;             % (d)
     tt=[0:dt:N-1];       % time axis for graphing
     Nm=length(tt);
@@ -54,7 +55,7 @@ for nn=1:10                % for loop controlling running times of the model
     x=[];xs=[];UPx=[]; LEx=[];
     x(1)=xo;                    % Contaminant concentration (g/mm3)
     %------------------- Plant properties
-    LAImax=4;                %(m2/m2)
+    LAImax=3;                %(m2/m2)
     Zrmax=600;               %Maximum root-zone depth (mm)
     Zr=[]; r=[]; UPxt=[];
     LAI(nn,1)=1;                %Initial LAI (how much biomass has been developed before the plant is used for phytoremediation)
@@ -63,7 +64,7 @@ for nn=1:10                % for loop controlling running times of the model
     UPxt(1)=0;                %Accumulated toxicant in the plant (g/mm2)
     tox=0.01;                     %Parameter indicating plant sensitivity to the toxicant
     SRL=120;                   %Specific root length (mm/kg)
-    ma=0.15;                    %Empirical transfering parameter of aboveground biomass (LAI and Msh) 0.15-0.2 (kg/m2)
+    ma=5;                    %Empirical transfering parameter of aboveground biomass (LAI and Msh) 5-6 (kg/m2)
     Zr(1)=50;
     %------------------- Plant dynamics parameters
     kC=0.1;                    %Rate parameter of photosynthesis giving typical rate of input of substrate C (d^-1)
@@ -95,7 +96,7 @@ for nn=1:10                % for loop controlling running times of the model
         x(i+1)=max(x(i)+dt*(-UPx(i)-LEx(i))/Zr(i),0);  %g/mm3
         UPxt(i+1)=UPxt(i)+UPx(i)*dt;         
     % Carbon assimilation and partitioning
-         Time_2_max_LAI=365; %days needed to reach the maximum LAI
+         Time_2_max_LAI=3650; %days needed to reach the maximum LAI
          Re(i)=(Msh(i)+Mrt(i))/Time_2_max_LAI;                 %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
          dMsh=max(0.75*(An(i)-Re(i))*2*dt,0);         %Plant tissue typically contains about 45-50% carbon (so (An-Re)*2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
          Msh(i+1)=Msh(i)+dMsh;
@@ -124,7 +125,7 @@ for nn=1:10                % for loop controlling running times of the model
     xlabel ('Time (d)','fontweight','bold','fontsize',10)
     ylabel ('LAI','fontweight','bold','fontsize',10)
     hold on
-end
+%end
 
 %% Variables Plotting Over Time for a single run
 %----------- Plot the Hydrologic Balance Components

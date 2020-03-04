@@ -100,7 +100,7 @@ for nn=1:10                % for loop controlling running times of the model
         UPxt(i+1)=UPxt(i)+UPx(i)*dt;         
     % Carbon assimilation and partitioning
          Time_2_max_LAI=365; %days needed to reach the maximum LAI
-         Re(i)=(Msh(i)+Mrt(i))/Time_2_max_LAI;                 %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
+         Re(i)=An(i)/2;                 %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
          dMsh=max(0.75*(An(i)-Re(i))*2*dt,0);         %Plant tissue typically contains about 45-50% carbon (so (An-Re)*2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
          Msh(i+1)=Msh(i)+dMsh;
          LAI(nn,i+1)=min(Msh(i+1)/ma,LAImax);
@@ -150,7 +150,7 @@ Plot_Contaminant_Time_Series
 Plot_plant_dynamics
 %----------- Plot efficiency surface
 %% plotting the track
-if mod(x1,20) == 0
+if mod(nn,20) == 0
     figure(5)
     plot3(ones(1,Nm)*xo,s(x1,1:Nm),LAI(x1,1:Nm))
     xlabel('Initial contaminant concentration (g/mm^3)')

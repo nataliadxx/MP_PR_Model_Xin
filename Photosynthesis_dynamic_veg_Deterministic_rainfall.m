@@ -15,8 +15,8 @@ clear all
 clc
 %------------ Construct synthetic precipitation time series
 freq=1;                       % Return frequency between days (1/d)
-annual_precip=800;               % Annual precip. (mm/year)
-N=1000;                           % Number of days to simulate the process
+annual_precip=500;               % Annual precip. (mm/year)
+N=365;                           % Number of days to simulate the process
 dep=(annual_precip/365)/freq;
 Pr=ones(1,N)*dep;                  %constant rainfall (mm/d)
 tday=[0:1:N-1];                    % Time series
@@ -26,20 +26,20 @@ tday=[0:1:N-1];                    % Time series
 Eff=[];
 LAI=[]; s=[];
 xrmvd=[]; UPt=[]; LEt=[];
-%for nn=1:10                % for loop controlling running times of the model
-    nn=1;
+for nn=1:10                % for loop controlling running times of the model
+    %nn=1;
     dt=0.01;             % (d)
     tt=[0:dt:N-1];       % time axis for graphing
     Nm=length(tt);
     %------------------- Soil properties
-    soiltype=3;                  % Sand =1; Clay =11
+    soiltype=6;                  % Sand =1; Clay =11
     [b,thetas, Ks1, psis,theta_w]=soil_hydraulic_values_generator(soiltype);
     rhob=1500*1000;               % Soil bulk density, g/m3
     Por=1.01*thetas;              % Porosity, a bit larger than soil moisture content near saturation
     Ks=Ks1*1000*3600*24;          % now in mm/d
     sw=0.1*(theta_w/Por);         % degree of saturation well below wilting point
     s1=thetas/Por;                % soil moisture threshold for deep percolation (saturation)
-    s(nn,1)=0.3*s1;                 % degree of saturation at t=0, near saturation
+    s(nn,1)=0.5*s1;                 % degree of saturation at t=0, near saturation
     ET=[]; LQ=[];
     %------------------- Climatic condition
     T=25+0.2*(nn-1);                      %atmospheric temperature (degree celcius)
@@ -55,7 +55,7 @@ xrmvd=[]; UPt=[]; LEt=[];
     x=[];xs=[];UPx=[]; LEx=[];
     x(1)=xo;                    % Contaminant concentration (g/mm3)
     %------------------- Plant properties
-    LAImax=3;                %(m2/m2)
+    LAImax=4;                %(m2/m2)
     Zrmax=600;               %Maximum root-zone depth (mm)
     Zr=[]; r=[]; UPxt=[];
     LAI(nn,1)=1;                %Initial LAI (how much biomass has been developed before the plant is used for phytoremediation)
@@ -96,7 +96,7 @@ xrmvd=[]; UPt=[]; LEt=[];
         x(i+1)=max(x(i)+dt*(-UPx(i)-LEx(i))/Zr(i),0);  %g/mm3
         UPxt(i+1)=UPxt(i)+UPx(i)*dt;         
     % Carbon assimilation and partitioning
-         Time_2_max_LAI=3650; %days needed to reach the maximum LAI
+         Time_2_max_LAI=3650;   %the larger, the slower the growth(?)
          Re(i)=(Msh(i)+Mrt(i))/Time_2_max_LAI;                 %Respiration counts for half of total C assimilation. Farrar 1985, Amthor 1989
          dMsh=max(0.75*(An(i)-Re(i))*2*dt,0);         %Plant tissue typically contains about 45-50% carbon (so (An-Re)*2); Assuming the biomass partition (0.75 aboveground) follows the empirical beta from Niklas 2005
          Msh(i+1)=Msh(i)+dMsh;
@@ -125,7 +125,7 @@ xrmvd=[]; UPt=[]; LEt=[];
     xlabel ('Time (d)','fontweight','bold','fontsize',10)
     ylabel ('LAI','fontweight','bold','fontsize',10)
     hold on
-%end
+end
 
 %% Variables Plotting Over Time for a single run
 %----------- Plot the Hydrologic Balance Components

@@ -26,7 +26,7 @@ tday=[0:1:N-1];                    % Time series
 Eff=[];
 LAI=[]; s=[];
 xrmvd=[]; UPt=[]; LEt=[];
-for nn=1:10                % for loop controlling running times of the model
+for nn=1:11                % for loop controlling running times of the model
     %nn=1;
     dt=0.01;             % (d)
     tt=[0:dt:N-1];       % time axis for graphing
@@ -42,15 +42,15 @@ for nn=1:10                % for loop controlling running times of the model
     s(nn,1)=0.5*s1;                 % degree of saturation at t=0, near saturation
     ET=[]; LQ=[];
     %------------------- Climatic condition
-    T=25+0.2*(nn-1);                      %atmospheric temperature (degree celcius)
+    T=25;                      %atmospheric temperature (degree celcius)
     Ca=400/1000000;             %atmospheric CO2 concentration (atm)
     RH=0.5;                    %relative humidity
-    ET0=3;                        % Reference ET mm/d, to be modified with temperature?
+    ET0=4;                        % Reference ET mm/d, to be modified with temperature?
     VPD=0.611*exp(17.502*T/(249.91+T))*(1-RH)/101; %vapor pressure deficit, calculated with Claussius-Clapeyron equation (atm)
     WUE=0.625*Ca*0.25/VPD;      %Water use efficiency at leaf level,assuming Ci/Ca=0.75 (0.37 for C4 plants), gc/gv=1/1.6 (mol CO2/mol H2O)
     %------------------- Contaminant properties
     kd=1e-5;                    % Equilibrium partitioning coefficient (m3/g) of contaminant adsorption
-    TSCF=0.5;                   % Transpiration-stream concentration factor
+    TSCF=0.54;                   % Transpiration-stream concentration factor
     xo=1;
     x=[];xs=[];UPx=[]; LEx=[];
     x(1)=xo;                    % Contaminant concentration (g/mm3)
@@ -81,7 +81,7 @@ for nn=1:10                % for loop controlling running times of the model
         Tr(i)=ET0*(0.33*LAI(nn,i)+0.45)*(-2*s(nn,i)^3+3*s(nn,i)^2)-tox*UPxt(i);            %Transpiration (mm/d);increase with LAI and s; decrease as contaminant accumulates; empirical
         An(i)=12*Tr(i)*WUE/18;               %Photosynthesis rate kg C/(m2*d); note that there is a unit conversion (mm/d to kg/(m2*d)); 12 and 18 are MW of C and H20       
     % Hydrologic balance
-        Evmax=ET0*exp(-0.398*LAI(nn,i));               % surface evaporation decreases with LAI (Or & Lehmann 2019)
+        Evmax=(ET0-Tr(i))*exp(-0.398*LAI(nn,i));               % surface evaporation decreases with LAI (Or & Lehmann 2019)
         Ev(i)=Evmax*rs;      %surface evaporation increases with rs (mm/d)
         ET(i)=Tr(i)+Ev(i);
         Precip=interp1(tday,Pr,tt(i),'linear');
@@ -115,16 +115,15 @@ for nn=1:10                % for loop controlling running times of the model
     xrmvd(nn)=1-x(Nm)/xo;
     %------Plotting
     figure(5)
-    subplot(4,1,1)
+    subplot(2,1,1)
     plot(tt(1:Nm),s(nn,1:Nm),'b-')
-    ylabel ('s','fontweight','bold','fontsize',10)
+    ylabel ('s','fontweight','normal','fontsize',15)
     hold on
 
-    subplot(4,1,2)
-    plot(tt(1:Nm),LAI(nn,1:Nm),'g-')
-    xlabel ('Time (d)','fontweight','bold','fontsize',10)
-    ylabel ('LAI','fontweight','bold','fontsize',10)
-    hold on
+    subplot(2,1,2)
+    plot(tt(1:Nm),LAI(nn,1:Nm),'g-','linewidth',2)
+    xlabel ('Time (d)','fontweight','normal','fontsize',15)
+    ylabel ('LAI','fontweight','normal','fontsize',15)
 end
 
 %% Variables Plotting Over Time for a single run
@@ -137,15 +136,19 @@ Plot_plant_dynamics
 %----------- Plot efficiency surface
 
 %% Variables plotting over time for scenarios
-figure(5)
-subplot(4,1,3)
-plot((400:50:850),Eff,'k-')
-ylabel ('Efficiency','fontweight','bold','fontsize',10)
+figure(6)
+subplot(2,1,1)
+plot((1:11),Eff,'k-')
+ylabel ('Efficiency','fontweight','normal','fontsize',15)
+hold on
 
-subplot(4,1,4)
-plot((400:50:850),xrmvd,'k-')
-xlabel ('CO2 concentration (ppm)','fontweight','bold','fontsize',10)
-ylabel ('Removed x','fontweight','bold','fontsize',10)
+subplot(2,1,2)
+plot((1:11),xrmvd,'k-')
+%xlabel ('CO2 concentration (ppm)','fontweight','normal','fontsize',15)
+%xlabel ('Temperature (\circC)','fontweight','normal','fontsize',15)
+xlabel('Soil type code','fontweight','normal','fontsize',15)
+%xlabel('Annual rainfall (mm)','fontweight','normal','fontsize',15)
+ylabel ('Removed x%','fontweight','normal','fontsize',15)
 %% plotting the track
 if mod(nn,20) == 0
     figure(5)

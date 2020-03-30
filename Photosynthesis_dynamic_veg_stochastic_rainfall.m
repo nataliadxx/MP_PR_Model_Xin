@@ -17,7 +17,7 @@ clc
 Eff=[];
 xrmvd=[];
 LAIend=[];
-for nn=1:18
+for nn=1:100
     %nn=1;
     Eff_temp=[];
     xrmvd_temp=[];
@@ -27,7 +27,7 @@ for nn=1:18
     for run=1:100                % for loop controlling running times of the model
         %------------ Construct synthetic precipitation time series
         freq=1/10;                       % Return frequency between days (1/d)
-        annual_precip=500;               % Annual precip. (mm/year)
+        annual_precip=800;               % Annual precip. (mm/year)
         N=365;                           % Number of days to simulate the process
         dep=(annual_precip/365)/freq;
         [Pr]=precip_generate(freq,dep,N);              
@@ -47,11 +47,11 @@ for nn=1:18
         sw=0.1*(theta_w/Por);         % degree of saturation well below wilting point
         s1=thetas/Por;                % soil moisture threshold for deep percolation (saturation)
         s=[];
-        s(1)=0.9*s1;                 % degree of saturation at t=0, near saturation
+        s(1)=0.7*s1;                 % degree of saturation at t=0, near saturation
         ET=[]; LQ=[];
         %------------------- Climatic condition
         T=25;                      %atmospheric temperature (degree celcius)
-        Ca=(400+50*(nn-1))/1000000;             %atmospheric CO2 concentration (atm)
+        Ca=400/1000000;             %atmospheric CO2 concentration (atm)
         RH=0.5;                    %relative humidity
         ET0=4;                        % Reference ET mm/d, to be modified with temperature?
         VPD=0.611*exp(17.502*T/(249.91+T))*(1-RH)/101; %vapor pressure deficit, calculated with Claussius-Clapeyron equation (atm)
@@ -70,7 +70,7 @@ for nn=1:18
         %rmax=0.05;                %Maximum growth rate of LAI (1/time), noting that this value is associated with dt
         k_intercept=0.05;         %Attenuation of rainwater - used for interception
         UPxt(1)=0;                %Accumulated toxicant in the plant (g/mm2)
-        tox=0.01;                     %Parameter indicating plant sensitivity to the toxicant
+        tox=0.01*nn;                     %Parameter indicating plant sensitivity to the toxicant
         SRL=120;                   %Specific root length (mm/kg)
         ma=5;                    %Empirical transfering parameter of aboveground biomass (LAI and Msh) 0.15-0.2 (kg/m2)
         Zr(1)=50;
@@ -131,19 +131,20 @@ end
 %% Variables plotting over time for scenarios
 figure(6)
 subplot(3,1,1)
-plot((400:50:1250),Eff,'k-')
+plot((0.01:0.01:1),Eff,'k-')
 ylabel ('Efficiency','fontweight','normal','fontsize',15)
 
 subplot(3,1,2)
-plot((400:50:1250),xrmvd,'k-')
+plot((0.01:0.01:1),xrmvd,'k-')
 %xlabel('Annual rainfall (mm)','fontweight','normal','fontsize',15)
 %xlabel('Rainfall return period (d)','fontweight','normal','fontsize',15)
+xlabel('Toxicity parameter','fontweight','normal','fontsize',15)
 ylabel ('Removed x %','fontweight','normal','fontsize',15)
 
 subplot(3,1,3)
-plot((400:50:1250),LAIend,'k-')
+plot((0.01:0.01:1),LAIend,'k-')
 ylabel('Final LAI','fontweight','normal','fontsize',15)
-xlabel('CO_2 concentration (ppm)','fontweight','normal','fontsize',15)
+%xlabel('CO_2 concentration (ppm)','fontweight','normal','fontsize',15)
 %xlabel ('Temperature (\circC)','fontweight','normal','fontsize',15)
 %% VariablesPlottingOverTime
 %----------- Plot the Hydrologic Balance Components

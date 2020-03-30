@@ -26,7 +26,7 @@ tday=[0:1:N-1];                    % Time series
 Eff=[];
 LAI=[]; s=[];
 xrmvd=[]; UPt=[]; LEt=[];
-for nn=1:11                % for loop controlling running times of the model
+for nn=1:100                % for loop controlling running times of the model
     %nn=1;
     dt=0.01;             % (d)
     tt=[0:dt:N-1];       % time axis for graphing
@@ -62,7 +62,7 @@ for nn=1:11                % for loop controlling running times of the model
     %rmax=0.05;                %Maximum growth rate of LAI (1/time), noting that this value is associated with dt
     k_intercept=0.05;         %Attenuation of rainwater - used for interception
     UPxt(1)=0;                %Accumulated toxicant in the plant (g/mm2)
-    tox=0.01;                     %Parameter indicating plant sensitivity to the toxicant
+    tox=0.01*nn;                     %Parameter indicating plant sensitivity to the toxicant
     SRL=120;                   %Specific root length (mm/kg)
     ma=5;                    %Empirical transfering parameter of aboveground biomass (LAI and Msh) 5-6 (kg/m2)
     Zr(1)=50;
@@ -138,16 +138,17 @@ Plot_plant_dynamics
 %% Variables plotting over time for scenarios
 figure(6)
 subplot(2,1,1)
-plot((1:11),Eff,'k-')
+plot((0.01:0.01:1),Eff,'k-')
 ylabel ('Efficiency','fontweight','normal','fontsize',15)
 hold on
 
 subplot(2,1,2)
-plot((1:11),xrmvd,'k-')
-%xlabel ('CO2 concentration (ppm)','fontweight','normal','fontsize',15)
+plot((0.01:0.01:1),xrmvd,'k-')
+%xlabel ('CO_2 concentration (ppm)','fontweight','normal','fontsize',15)
 %xlabel ('Temperature (\circC)','fontweight','normal','fontsize',15)
-xlabel('Soil type code','fontweight','normal','fontsize',15)
+%xlabel('Soil type code','fontweight','normal','fontsize',15)
 %xlabel('Annual rainfall (mm)','fontweight','normal','fontsize',15)
+xlabel('Toxicity parameter','fontweight','normal','fontsize',15)
 ylabel ('Removed x%','fontweight','normal','fontsize',15)
 %% plotting the track
 if mod(nn,20) == 0

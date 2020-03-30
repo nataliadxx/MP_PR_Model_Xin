@@ -15,7 +15,7 @@ clear all
 clc
 %------------ Construct synthetic precipitation time series
 freq=1/10;                       % Return frequency between days (1/d)
-annual_precip=500;               % Annual precip. (mm/year)
+annual_precip=800;               % Annual precip. (mm/year)
 N=365;                           % Number of days to simulate the process
 dep=(annual_precip/365)/freq;
 [Pr]=precip_generate(freq,dep,N);                  %constant rainfall (mm/d)
@@ -41,24 +41,24 @@ Por=1.01*thetas;              % Porosity, a bit larger than soil moisture conten
 Ks=Ks1*1000*3600*24;          % now in mm/d
 sw=0.1*(theta_w/Por);         % degree of saturation well below wilting point
 s1=thetas/Por;                % soil moisture threshold for deep percolation (saturation)
-s(x1,1)=0.9*s1;                 % degree of saturation at t=0, near saturation
+s(x1,1)=0.7*s1;                 % degree of saturation at t=0, near saturation
 ET=[]; LQ=[];
 %------------------- Climatic condition
 T=25;                      %atmospheric temperature (degree celcius)
 Ca=400/1000000;             %atmospheric CO2 concentration (atm)
 RH=0.5;                    %relative humidity
-ET0=3;                        % Reference ET mm/d, to be modified with temperature?
+ET0=4;                        % Reference ET mm/d, to be modified with temperature?
 VPD=0.611*exp(17.502*T/(249.91+T))*(1-RH)/101; %vapor pressure deficit, calculated with Claussius-Clapeyron equation (atm)
 WUE=0.625*Ca*0.25/VPD;      %Water use efficiency at leaf level,assuming Ci/Ca=0.75 (0.37 for C4 plants), gc/gv=1/1.6 (mol CO2/mol H2O)
 %------------------- Contaminant properties
 kd=1e-5;                    % Equilibrium partitioning coefficient (m3/g) of contaminant adsorption
-TSCF=0.5;                   % Transpiration-stream concentration factor
+TSCF=0.54;                   % Transpiration-stream concentration factor
 xo=1;
 x=[];xs=[];UPx=[]; LEx=[];
 x(1)=xo;                    % Contaminant concentration (g/mm3)
 %------------------- Plant properties
-LAI=3;                %(m2/m2)
-Zr=60;               %Maximum root-zone depth (mm)
+LAI=1;                %(m2/m2)
+Zr=50;               %Maximum root-zone depth (mm)
 Evmax=ET0*exp(-0.398*LAI);               % surface evaporation decreases with LAI (Or & Lehmann 2019)
 r=[]; UPxt=[];
 k_intercept=0.05;         %Attenuation of rainwater - used for interception
